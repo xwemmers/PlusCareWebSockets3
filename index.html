@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script>
+        function logMessage(msg) {
+            document.getElementById("output").innerHTML += msg + "<br />";
+        }
+
+        var socket;
+
+        function openConnection() {
+            socket = new WebSocket("ws://localhost:8080/testsocket");
+
+            socket.onopen = function () {
+                logMessage("The connection was opened :-)");
+            }
+            socket.onclose = function () {
+                logMessage("The connection was closed :-(");
+            }
+            socket.onmessage = function (msg) {
+                logMessage("From the server: " + msg.data);
+            }
+        }
+
+        function sendMessage() {
+            socket.send(JSON.stringify({ fn: "Add", firstNumber: 20, secondNumber: 3 }));
+            //socket.send(JSON.stringify({ fn: "Subtract", firstNumber: 20, secondNumber: 3 }));
+            //socket.send(JSON.stringify({ fn: "Multiply", firstNumber: 20, secondNumber: 3 }));
+            //socket.send(JSON.stringify({ fn: "Divide", firstNumber: 20, secondNumber: 3 }));
+        }
+
+        function openExcel() {
+            socket.send(JSON.stringify({ fn: "openexcel" }));
+        }
+
+        function closeConnection() {
+            socket.close();
+        }
+    </script>
+</head>
+<body>
+
+    <input type="button" value="Open connection" onclick="openConnection();" />
+    <input type="button" value="Send a message" onclick="sendMessage();" />
+    <input type="button" value="Open Excel" onclick="openExcel();" />
+
+    <hr />
+
+    <div id="output"></div>
+
+</body>
+</html>
